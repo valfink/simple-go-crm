@@ -20,12 +20,12 @@ This project is backend-only, so you have to interact with the REST API in order
 
 #### `GET /customers`
 
-- response: [Customer\[\]](#customer)
+- response: [`Customer[]`](#customer)
 - returns all saved customers
 
 #### `GET /customers/{id}`
 
-- response: [Customer](#customer)
+- response: [`Customer`](#customer)
 - returns the customer matching the id
 - if no customer matches the id, returns a 404 error
 - if the id is not valid, returns a 400 error
