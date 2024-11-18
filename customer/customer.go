@@ -5,10 +5,10 @@ import (
 )
 
 type Customer struct {
-	ID        uuid.UUID
-	Name      string
-	Role      string
-	Email     string
-	Phone     string
-	Contacted bool
+	ID        uuid.UUID `json:"id"`
+	Name      string    `json:"name"`
+	Role      string    `json:"role"`
+	Email     string    `json:"email"`
+	Phone     string    `json:"phone"`
+	Contacted bool      `json:"contacted"`
 }
