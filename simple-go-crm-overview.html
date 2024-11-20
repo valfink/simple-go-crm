@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        code {
+            background-color: #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 id="simple-go-crm">simple-go-crm</h1>
+    <h2 id="description">description</h2>
+    <p>My cap stone project for the Udacity <strong>Golang</strong> course: a simple CRUD-backend to manage
+        &quot;customers&quot;.</p>
+    <h2 id="installation">installation</h2>
+    <ul>
+        <li>set up a local go environment (min. <code>go1.23.0</code>)</li>
+        <li>clone this repo</li>
+    </ul>
+    <h2 id="launch-usage">launch &amp; usage</h2>
+    <ul>
+        <li>within this folder, in a terminal, type: <code>go run simple-crm</code></li>
+        <li>the API will be exposed under <code>http://localhost:3000</code></li>
+    </ul>
+    <p>This project is backend-only, so you have to interact with the REST API in order to use it. Consider using an API
+        client like Postman or Bruno.</p>
+    <h2 id="available-api-operations">Available API operations</h2>
+    <h3 id="-get-customers-"><code>GET /customers</code></h3>
+    <ul>
+        <li>response: <a href="#customer"><code>Customer[]</code></a></li>
+        <li>returns all saved customers</li>
+    </ul>
+    <h3 id="-get-customers-id-"><code>GET /customers/{id}</code></h3>
+    <ul>
+        <li>response: <a href="#customer"><code>Customer</code></a></li>
+        <li>returns the customer matching the id</li>
+        <li>if no customer matches the id, returns with a <code>404</code> status</li>
+        <li>if the id is not valid, returns with a <code>400</code> status</li>
+    </ul>
+    <h3 id="-post-customers-"><code>POST /customers</code></h3>
+    <ul>
+        <li>request payload: <a href="#customercreatedto"><code>CustomerCreateDTO</code></a></li>
+        <li>response: <a href="#customer"><code>Customer</code></a></li>
+        <li>creates a new customer with a random id and returns it</li>
+        <li>if the payload is not valid, returns with a <code>400</code> status</li>
+    </ul>
+    <h3 id="-put-customers-id-"><code>PUT /customers/{id}</code></h3>
+    <ul>
+        <li>request payload: <a href="#customer"><code>Customer</code></a></li>
+        <li>response: <a href="#customer"><code>Customer</code></a></li>
+        <li>updates the customer with the specified id and returns it</li>
+        <li>if the id or the payload is not valid, or they don&#39;t match, returns with a <code>400</code> status</li>
+        <li>if no customer exists with the given id, returns with a <code>404</code> status</li>
+    </ul>
+    <h3 id="-delete-customers-id-"><code>DELETE /customers/{id}</code></h3>
+    <ul>
+        <li>response: <a href="#customer"><code>Customer[]</code></a></li>
+        <li>deletes the customer with the specified id and returns the remaining customers</li>
+        <li>if the id is not valid, returns with a <code>400</code> status</li>
+        <li>if no customer exists with the given id, returns with a <code>404</code> status</li>
+    </ul>
+    <h2 id="model">model</h2>
+    <h3 id="customer"><code>Customer</code></h3>
+    <pre><code class="lang-typescript">{
+    <span class="hljs-string">"id"</span>:        UUID
+    <span class="hljs-string">"name"</span>:      <span class="hljs-built_in">string</span>
+    <span class="hljs-string">"role"</span>:      <span class="hljs-built_in">string</span>
+    <span class="hljs-string">"email"</span>:     <span class="hljs-built_in">string</span>
+    <span class="hljs-string">"phone"</span>:     <span class="hljs-built_in">string</span>
+    <span class="hljs-string">"contacted"</span>: <span class="hljs-built_in">boolean</span>
+}
+</code></pre>
+    <h3 id="customercreatedto"><code>CustomerCreateDTO</code></h3>
+    <pre><code class="lang-typescript">{
+    <span class="hljs-string">"name"</span>:      <span class="hljs-built_in">string</span>
+    <span class="hljs-string">"role"</span>:      <span class="hljs-built_in">string</span>
+    <span class="hljs-string">"email"</span>:     <span class="hljs-built_in">string</span>
+    <span class="hljs-string">"phone"</span>:     <span class="hljs-built_in">string</span>
+    <span class="hljs-string">"contacted"</span>: <span class="hljs-built_in">boolean</span>
+}
+</code></pre>
+</body>
+
+</html>
