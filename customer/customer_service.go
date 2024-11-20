@@ -18,10 +18,14 @@ func respondWithError(w http.ResponseWriter, status int, msg string) {
 }
 
 func respondOK(w http.ResponseWriter, body any) {
+	respondOkWithStatus(w, http.StatusOK, body)
+}
+
+func respondOkWithStatus(w http.ResponseWriter, status int, body any) {
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(status)
 	json.NewEncoder(w).Encode(body)
-	slog.Info("OK response")
+	slog.Info("OK Response", "Status", status)
 }
 
 func GetAllCustomers(w http.ResponseWriter, r *http.Request) {
@@ -80,7 +84,7 @@ func PostNewCustomer(w http.ResponseWriter, r *http.Request) {
 
 	AddOrUpdateCustomer(newCustomer)
 
-	respondOK(w, newCustomer)
+	respondOkWithStatus(w, http.StatusCreated, newCustomer)
 }
 
 func PutCustomer(w http.ResponseWriter, r *http.Request) {
