@@ -14,21 +14,23 @@ func respondWithError(w http.ResponseWriter, status int, msg string) {
 	w.WriteHeader(status)
 	error := errors.New(msg)
 	json.NewEncoder(w).Encode(error)
-	slog.Error("Error response", "Status", status, "Error", error)
+	slog.Warn("Error response", "Status", status, "Error", error)
+}
+
+func respondOK(w http.ResponseWriter, body any) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(body)
+	slog.Info("OK response")
 }
 
 func GetAllCustomers(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
 	customers := FindAllCustomers()
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(customers)
+	respondOK(w, customers)
 }
 
 func GetCustomerById(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
 	id, idPresent := mux.Vars(r)["id"]
 	if !idPresent {
 		respondWithError(w, http.StatusBadRequest, "ID not specified")
@@ -47,13 +49,10 @@ func GetCustomerById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(customer)
+	respondOK(w, customer)
 }
 
 func PostNewCustomer(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
 	var customerCreateDTO CustomerCreateDTO
 
 	err := json.NewDecoder(r.Body).Decode(&customerCreateDTO)
@@ -79,8 +78,65 @@ func PostNewCustomer(w http.ResponseWriter, r *http.Request) {
 		Contacted: customerCreateDTO.Contacted,
 	}
 
-	AddCustomer(newCustomer)
+	AddOrUpdateCustomer(newCustomer)
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(newCustomer)
+	respondOK(w, newCustomer)
+}
+
+func PutCustomer(w http.ResponseWriter, r *http.Request) {
+	id, idPresent := mux.Vars(r)["id"]
+	if !idPresent {
+		respondWithError(w, http.StatusBadRequest, "ID not specified")
+		return
+	}
+
+	uuid, err := uuid.Parse(id)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Not a valid uuid: "+id)
+		return
+	}
+
+	_, err = FindCustomerById(uuid)
+	if err != nil {
+		respondWithError(w, http.StatusNotFound, "Could not find customer with id: "+uuid.String())
+		return
+	}
+
+	var updatedCustomer Customer
+	err = json.NewDecoder(r.Body).Decode(&updatedCustomer)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Could not parse request payload")
+		return
+	}
+
+	if uuid != updatedCustomer.ID {
+		respondWithError(w, http.StatusBadRequest, "IDs don't match: "+uuid.String()+" / "+updatedCustomer.ID.String())
+		return
+	}
+
+	AddOrUpdateCustomer(updatedCustomer)
+
+	respondOK(w, updatedCustomer)
+}
+
+func DeleteCustomer(w http.ResponseWriter, r *http.Request) {
+	id, idPresent := mux.Vars(r)["id"]
+	if !idPresent {
+		respondWithError(w, http.StatusBadRequest, "ID not specified")
+		return
+	}
+
+	uuid, err := uuid.Parse(id)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Not a valid uuid: "+id)
+		return
+	}
+
+	customerDeleted := RemoveCustomer(uuid)
+	if !customerDeleted {
+		respondWithError(w, 404, "Could not find customer with id: "+uuid.String())
+		return
+	}
+
+	GetAllCustomers(w, r)
 }

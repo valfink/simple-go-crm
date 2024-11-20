@@ -29,6 +29,16 @@ func FindCustomerById(id uuid.UUID) (*Customer, error) {
 	return &customer, nil
 }
 
-func AddCustomer(customer Customer) {
+func AddOrUpdateCustomer(customer Customer) {
 	allCustomers[customer.ID] = customer
+}
+
+func RemoveCustomer(id uuid.UUID) bool {
+	_, customerExists := allCustomers[id]
+	if !customerExists {
+		return false
+	}
+
+	delete(allCustomers, id)
+	return true
 }

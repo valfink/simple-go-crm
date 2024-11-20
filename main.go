@@ -20,6 +20,8 @@ func main() {
 	router.HandleFunc("/customers", customer.GetAllCustomers).Methods("GET")
 	router.HandleFunc("/customers/{id}", customer.GetCustomerById).Methods("GET")
 	router.HandleFunc("/customers", customer.PostNewCustomer).Methods("POST")
+	router.HandleFunc("/customers/{id}", customer.PutCustomer).Methods("PUT")
+	router.HandleFunc("/customers/{id}", customer.DeleteCustomer).Methods("DELETE")
 
 	slog.Info("Starting server...")
 	http.ListenAndServe(":3000", router)

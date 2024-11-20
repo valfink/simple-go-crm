@@ -16,34 +16,41 @@ My cap stone project for the Udacity **Golang** course: a simple CRUD-backend to
 
 This project is backend-only, so you have to interact with the REST API in order to use it. Consider using an API client like Postman or Bruno.
 
-### Available API operations
+## Available API operations
 
-#### `GET /customers`
+### `GET /customers`
 
 - response: [`Customer[]`](#customer)
 - returns all saved customers
 
-#### `GET /customers/{id}`
+### `GET /customers/{id}`
 
 - response: [`Customer`](#customer)
 - returns the customer matching the id
-- if no customer matches the id, returns a 404 error
-- if the id is not valid, returns a 400 error
+- if no customer matches the id, returns with a `404` status
+- if the id is not valid, returns with a `400` status
 
-#### `POST /customers`
+### `POST /customers`
 
 - request payload: [`CustomerCreateDTO`](#customercreatedto)
 - response: [`Customer`](#customer)
 - creates a new customer with a random id and returns it
-- if the payload is not valid, returns a 400 error
+- if the payload is not valid, returns with a `400` status
 
-#### `PUT /customers/{id}`
+### `PUT /customers/{id}`
 
-**todo**
+- request payload: [`Customer`](#customer)
+- response: [`Customer`](#customer)
+- updates the customer with the specified id and returns it
+- if the id or the payload is not valid, or they don't match, returns with a `400` status
+- if no customer exists with the given id, returns with a `404` status
 
-#### `DELETE /customers/{id}`
+### `DELETE /customers/{id}`
 
-**todo**
+- response: [`Customer[]`](#customer)
+- deletes the customer with the specified id and returns the remaining customers
+- if the id is not valid, returns with a `400` status
+- if no customer exists with the given id, returns with a `404` status
 
 ## model
 
