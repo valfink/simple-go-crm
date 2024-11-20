@@ -12,6 +12,8 @@ import (
 
 // Tests happy path of submitting a well-formed GET /customers request
 func TestGetCustomersHandler(t *testing.T) {
+	customerRepo := customer.NewCustomerMockRepository()
+	customerService := customer.NewCustomerService(customerRepo)
 	req, err := http.NewRequest("GET", "/customers", nil)
 
 	if err != nil {
@@ -19,7 +21,7 @@ func TestGetCustomersHandler(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(customer.GetAllCustomers)
+	handler := http.HandlerFunc(customerService.GetAllCustomers)
 	handler.ServeHTTP(rr, req)
 
 	// Checks for 200 status code
@@ -37,6 +39,8 @@ func TestGetCustomersHandler(t *testing.T) {
 
 // Tests happy path of submitting a well-formed POST /customers request
 func TestAddCustomerHandler(t *testing.T) {
+	customerRepo := customer.NewCustomerMockRepository()
+	customerService := customer.NewCustomerService(customerRepo)
 	requestBody := strings.NewReader(`
 		{
 			"name": "Example Name",
@@ -54,7 +58,7 @@ func TestAddCustomerHandler(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(customer.PostNewCustomer)
+	handler := http.HandlerFunc(customerService.PostNewCustomer)
 	handler.ServeHTTP(rr, req)
 
 	// Checks for 201 status code
@@ -72,6 +76,8 @@ func TestAddCustomerHandler(t *testing.T) {
 
 // Tests unhappy path of deleting a user that doesn't exist
 func TestDeleteCustomerHandler(t *testing.T) {
+	customerRepo := customer.NewCustomerMockRepository()
+	customerService := customer.NewCustomerService(customerRepo)
 	id := "e7847fee-3a0e-455e-b151-519bdb9851c7"
 	req, err := http.NewRequest("DELETE", "/customers/"+id, nil)
 
@@ -86,7 +92,7 @@ func TestDeleteCustomerHandler(t *testing.T) {
 	req = mux.SetURLVars(req, vars)
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(customer.DeleteCustomer)
+	handler := http.HandlerFunc(customerService.DeleteCustomer)
 	handler.ServeHTTP(rr, req)
 
 	// Checks for 404 status code
@@ -98,6 +104,8 @@ func TestDeleteCustomerHandler(t *testing.T) {
 
 // Tests unhappy path of getting a user that doesn't exist
 func TestGetCustomerHandler(t *testing.T) {
+	customerRepo := customer.NewCustomerMockRepository()
+	customerService := customer.NewCustomerService(customerRepo)
 	id := "e7847fee-3a0e-455e-b151-519bdb9851c7"
 	req, err := http.NewRequest("GET", "/customers/"+id, nil)
 
@@ -112,7 +120,7 @@ func TestGetCustomerHandler(t *testing.T) {
 	req = mux.SetURLVars(req, vars)
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(customer.GetCustomerById)
+	handler := http.HandlerFunc(customerService.GetCustomerById)
 	handler.ServeHTTP(rr, req)
 
 	// Checks for 404 status code

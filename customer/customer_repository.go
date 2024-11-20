@@ -6,12 +6,21 @@ import (
 	"github.com/google/uuid"
 )
 
-var allCustomers = PrepareMockData()
+type CustomerMockRepository struct {
+	allCustomers map[uuid.UUID]Customer
+}
 
-func FindAllCustomers() []*Customer {
-	customerList := make([]*Customer, len(allCustomers))
+func NewCustomerMockRepository() *CustomerMockRepository {
+	mockCustomers := PrepareMockData()
+	return &CustomerMockRepository{
+		allCustomers: mockCustomers,
+	}
+}
+
+func (r *CustomerMockRepository) ListAllCustomers() []*Customer {
+	customerList := make([]*Customer, len(r.allCustomers))
 	i := 0
-	for _, c := range allCustomers {
+	for _, c := range r.allCustomers {
 		customerList[i] = &c
 		i++
 	}
@@ -19,8 +28,8 @@ func FindAllCustomers() []*Customer {
 	return customerList
 }
 
-func FindCustomerById(id uuid.UUID) (*Customer, error) {
-	customer, customerExists := allCustomers[id]
+func (r *CustomerMockRepository) GetCustomerById(id uuid.UUID) (*Customer, error) {
+	customer, customerExists := r.allCustomers[id]
 
 	if !customerExists {
 		return &customer, errors.New("Could not find customer with the id " + id.String())
@@ -29,16 +38,20 @@ func FindCustomerById(id uuid.UUID) (*Customer, error) {
 	return &customer, nil
 }
 
-func AddOrUpdateCustomer(customer Customer) {
-	allCustomers[customer.ID] = customer
+func (r *CustomerMockRepository) AddCustomer(customer Customer) {
+	r.allCustomers[customer.ID] = customer
 }
 
-func RemoveCustomer(id uuid.UUID) bool {
-	_, customerExists := allCustomers[id]
+func (r *CustomerMockRepository) UpdateCustomer(customer Customer) {
+	r.allCustomers[customer.ID] = customer
+}
+
+func (r *CustomerMockRepository) RemoveCustomer(id uuid.UUID) bool {
+	_, customerExists := r.allCustomers[id]
 	if !customerExists {
 		return false
 	}
 
-	delete(allCustomers, id)
+	delete(r.allCustomers, id)
 	return true
 }

@@ -10,6 +10,16 @@ import (
 	"github.com/gorilla/mux"
 )
 
+type CustomerService struct {
+	repository CustomerRepository
+}
+
+func NewCustomerService(repo CustomerRepository) *CustomerService {
+	return &CustomerService{
+		repository: repo,
+	}
+}
+
 func respondWithError(w http.ResponseWriter, status int, msg string) {
 	w.WriteHeader(status)
 	error := errors.New(msg)
@@ -28,13 +38,13 @@ func respondOkWithStatus(w http.ResponseWriter, status int, body any) {
 	slog.Info("OK Response", "Status", status)
 }
 
-func GetAllCustomers(w http.ResponseWriter, r *http.Request) {
-	customers := FindAllCustomers()
+func (s *CustomerService) GetAllCustomers(w http.ResponseWriter, r *http.Request) {
+	customers := s.repository.ListAllCustomers()
 
 	respondOK(w, customers)
 }
 
-func GetCustomerById(w http.ResponseWriter, r *http.Request) {
+func (s *CustomerService) GetCustomerById(w http.ResponseWriter, r *http.Request) {
 	id, idPresent := mux.Vars(r)["id"]
 	if !idPresent {
 		respondWithError(w, http.StatusBadRequest, "ID not specified")
@@ -47,7 +57,7 @@ func GetCustomerById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	customer, err := FindCustomerById(uuid)
+	customer, err := s.repository.GetCustomerById(uuid)
 	if err != nil {
 		respondWithError(w, http.StatusNotFound, "Could not find customer with id: "+uuid.String())
 		return
@@ -56,7 +66,7 @@ func GetCustomerById(w http.ResponseWriter, r *http.Request) {
 	respondOK(w, customer)
 }
 
-func PostNewCustomer(w http.ResponseWriter, r *http.Request) {
+func (s *CustomerService) PostNewCustomer(w http.ResponseWriter, r *http.Request) {
 	var customerCreateDTO CustomerCreateDTO
 
 	err := json.NewDecoder(r.Body).Decode(&customerCreateDTO)
@@ -82,12 +92,12 @@ func PostNewCustomer(w http.ResponseWriter, r *http.Request) {
 		Contacted: customerCreateDTO.Contacted,
 	}
 
-	AddOrUpdateCustomer(newCustomer)
+	s.repository.AddCustomer(newCustomer)
 
 	respondOkWithStatus(w, http.StatusCreated, newCustomer)
 }
 
-func PutCustomer(w http.ResponseWriter, r *http.Request) {
+func (s *CustomerService) PutCustomer(w http.ResponseWriter, r *http.Request) {
 	id, idPresent := mux.Vars(r)["id"]
 	if !idPresent {
 		respondWithError(w, http.StatusBadRequest, "ID not specified")
@@ -100,7 +110,7 @@ func PutCustomer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = FindCustomerById(uuid)
+	_, err = s.repository.GetCustomerById(uuid)
 	if err != nil {
 		respondWithError(w, http.StatusNotFound, "Could not find customer with id: "+uuid.String())
 		return
@@ -118,12 +128,12 @@ func PutCustomer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	AddOrUpdateCustomer(updatedCustomer)
+	s.repository.UpdateCustomer(updatedCustomer)
 
 	respondOK(w, updatedCustomer)
 }
 
-func DeleteCustomer(w http.ResponseWriter, r *http.Request) {
+func (s *CustomerService) DeleteCustomer(w http.ResponseWriter, r *http.Request) {
 	id, idPresent := mux.Vars(r)["id"]
 	if !idPresent {
 		respondWithError(w, http.StatusBadRequest, "ID not specified")
@@ -136,11 +146,11 @@ func DeleteCustomer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	customerDeleted := RemoveCustomer(uuid)
+	customerDeleted := s.repository.RemoveCustomer(uuid)
 	if !customerDeleted {
 		respondWithError(w, 404, "Could not find customer with id: "+uuid.String())
 		return
 	}
 
-	GetAllCustomers(w, r)
+	s.GetAllCustomers(w, r)
 }

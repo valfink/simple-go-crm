@@ -20,3 +20,11 @@ type CustomerCreateDTO struct {
 	Phone     string `json:"phone"`
 	Contacted bool   `json:"contacted"`
 }
+
+type CustomerRepository interface {
+	ListAllCustomers() []*Customer
+	GetCustomerById(id uuid.UUID) (*Customer, error)
+	AddCustomer(customer Customer)
+	UpdateCustomer(customer Customer)
+	RemoveCustomer(id uuid.UUID) bool
+}
