@@ -38,6 +38,10 @@ func respondOkWithStatus(w http.ResponseWriter, status int, body any) {
 	slog.Info("OK Response", "Status", status)
 }
 
+func (s *CustomerService) ServeHomePage(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "simple-go-crm-overview.html")
+}
+
 func (s *CustomerService) GetAllCustomers(w http.ResponseWriter, r *http.Request) {
 	customers := s.repository.ListAllCustomers()
 

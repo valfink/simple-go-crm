@@ -11,7 +11,7 @@ type CustomerMockRepository struct {
 }
 
 func NewCustomerMockRepository() *CustomerMockRepository {
-	mockCustomers := PrepareMockData()
+	mockCustomers := prepareMockData()
 	return &CustomerMockRepository{
 		allCustomers: mockCustomers,
 	}

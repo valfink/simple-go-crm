@@ -6,7 +6,7 @@ My cap stone project for the Udacity **Golang** course: a simple CRUD-backend to
 
 ## installation
 
-- set up a local go environment (min. go1.23.0)
+- set up a local go environment (min. `go1.23.0`)
 - clone this repo
 
 ## launch & usage

@@ -21,6 +21,7 @@ func main() {
 	router.Use(middleware.RequestLogger)
 
 	slog.Info("Registering handlers...")
+	router.HandleFunc("/", customerService.ServeHomePage).Methods("GET")
 	router.HandleFunc("/customers", customerService.GetAllCustomers).Methods("GET")
 	router.HandleFunc("/customers/{id}", customerService.GetCustomerById).Methods("GET")
 	router.HandleFunc("/customers", customerService.PostNewCustomer).Methods("POST")

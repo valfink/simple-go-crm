@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func PrepareMockData() map[uuid.UUID]Customer {
+func prepareMockData() map[uuid.UUID]Customer {
 	slog.Info("Preparing mock data...")
 	mockCustomers := make(map[uuid.UUID]Customer, 100)
 	for i := 0; i < 100; i++ {
