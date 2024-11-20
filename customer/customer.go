@@ -12,3 +12,11 @@ type Customer struct {
 	Phone     string    `json:"phone"`
 	Contacted bool      `json:"contacted"`
 }
+
+type CustomerCreateDTO struct {
+	Name      string `json:"name"`
+	Role      string `json:"role"`
+	Email     string `json:"email"`
+	Phone     string `json:"phone"`
+	Contacted bool   `json:"contacted"`
+}

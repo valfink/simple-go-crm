@@ -19,6 +19,7 @@ func main() {
 	slog.Info("Registering handlers...")
 	router.HandleFunc("/customers", customer.GetAllCustomers).Methods("GET")
 	router.HandleFunc("/customers/{id}", customer.GetCustomerById).Methods("GET")
+	router.HandleFunc("/customers", customer.PostNewCustomer).Methods("POST")
 
 	slog.Info("Starting server...")
 	http.ListenAndServe(":3000", router)

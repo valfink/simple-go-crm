@@ -32,7 +32,10 @@ This project is backend-only, so you have to interact with the REST API in order
 
 #### `POST /customers`
 
-**todo**
+- request payload: [`CustomerCreateDTO`](#customercreatedto)
+- response: [`Customer`](#customer)
+- creates a new customer with a random id and returns it
+- if the payload is not valid, returns a 400 error
 
 #### `PUT /customers/{id}`
 
@@ -49,6 +52,18 @@ This project is backend-only, so you have to interact with the REST API in order
 ```typescript
 {
 	"id":        UUID
+	"name":      string
+	"role":      string
+	"email":     string
+	"phone":     string
+	"contacted": boolean
+}
+```
+
+### `CustomerCreateDTO`
+
+```typescript
+{
 	"name":      string
 	"role":      string
 	"email":     string

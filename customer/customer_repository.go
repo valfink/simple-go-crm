@@ -28,3 +28,7 @@ func FindCustomerById(id uuid.UUID) (*Customer, error) {
 
 	return &customer, nil
 }
+
+func AddCustomer(customer Customer) {
+	allCustomers[customer.ID] = customer
+}

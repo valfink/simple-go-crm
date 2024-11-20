@@ -14,6 +14,7 @@ func PrepareMockData() map[uuid.UUID]Customer {
 		newId, err := uuid.NewRandom()
 		if err != nil {
 			slog.Error("Could not generate uuid", "Error", err)
+			continue
 		}
 
 		mockCustomers[newId] = Customer{
